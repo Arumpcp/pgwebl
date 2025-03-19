@@ -25,7 +25,7 @@
         crossorigin="anonymous"></script>
 
     @yield('scripts')
-
+    @include('components.toast')
 </body>
 
 </html>
