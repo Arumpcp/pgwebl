@@ -15,7 +15,7 @@ class PolygonsModel extends Model
 
     {
         $polygons = $this
-        ->select(DB::raw('ST_AsGeoJSON(geom) as geom, name, description,
+        ->select(DB::raw('ST_AsGeoJSON(geom) as geom, name, description, image,
         created_at,updated_at'))
         ->get();
 
@@ -33,6 +33,7 @@ class PolygonsModel extends Model
                     'description' => $p->description,
                     'created_at' => $p->created_at,
                     'updated_at' => $p->updated_at,
+                    'image' => $p->image,
                 ],
             ];
 
