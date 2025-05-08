@@ -48,8 +48,9 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Photo</label>
                             <input type="file" class="form-control" id="image_point" name="image"
-                            onchange="document.getElementById('preview-image-point').src = window.URL.createObjectURL(this.files[0])">
-                            <img src="" alt="" id="preview-image-point" class="img-thumbnail" width="300">
+                                onchange="document.getElementById('preview-image-point').src = window.URL.createObjectURL(this.files[0])">
+                            <img src="" alt="" id="preview-image-point" class="img-thumbnail"
+                                width="300">
                         </div>
 
                     </div>
@@ -94,8 +95,9 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Photo</label>
                             <input type="file" class="form-control" id="image_polylines" name="image"
-                            onchange="document.getElementById('preview-image-polylines').src = window.URL.createObjectURL(this.files[0])">
-                            <img src="" alt="" id="preview-image-polylines" class="img-thumbnail" width="300">
+                                onchange="document.getElementById('preview-image-polylines').src = window.URL.createObjectURL(this.files[0])">
+                            <img src="" alt="" id="preview-image-polylines" class="img-thumbnail"
+                                width="300">
                         </div>
 
                     </div>
@@ -109,7 +111,8 @@
     </div>
 
     <!-- Modal Create Polygon -->
-    <div class="modal fade" id="CreatePolygonModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="CreatePolygonModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -140,8 +143,9 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Photo</label>
                             <input type="file" class="form-control" id="image_polygons" name="image"
-                            onchange="document.getElementById('preview-image-polylgons').src = window.URL.createObjectURL(this.files[0])">
-                            <img src="" alt="" id="preview-image-polygons" class="img-thumbnail" width="300">
+                                onchange="document.getElementById('preview-image-polylgons').src = window.URL.createObjectURL(this.files[0])">
+                            <img src="" alt="" id="preview-image-polygons" class="img-thumbnail"
+                                width="300">
                         </div>
 
                     </div>
@@ -207,36 +211,42 @@
         });
 
         // GeoJSON untuk Point
-var pointLayer = L.geoJson(null, {
-    pointToLayer: function(feature, latlng) {
-        return L.circleMarker(latlng, {
-            radius: 6,
-            color: "#ff1493", // Pink
-            weight: 5,
-            opacity: 1,
-        });
-    },
-    onEachFeature: function(feature, layer) {
-        var popupContent = `
+        var pointLayer = L.geoJson(null, {
+            pointToLayer: function(feature, latlng) {
+                return L.circleMarker(latlng, {
+                    radius: 6,
+                    color: "#ff1493", // Pink
+                    weight: 5,
+                    opacity: 1,
+                });
+            },
+            onEachFeature: function(feature, layer) {
+                var popupContent = `
             <div style="color:#ff1493">
                 <strong>Nama:</strong> ${feature.properties.name} <br>
                 <strong>Deskripsi:</strong> ${feature.properties.description} <br>
                 <strong>Dibuat:</strong> ${feature.properties.created_at} <br>
-                <img src="{{ asset('storage/images') }}/${feature.properties.image}" width="200">;
+                <img src="{{ asset('storage/images') }}/${feature.properties.image}" width="200"> <br>
+                <form method="POST" action="{{ url('points') }}/${feature.properties.id}" onsubmit="return confirm('Yakin ingin menghapus titik ini?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-danger">
+                    <i class="fa-solid fa-trash-can"></i></button>
+                </form>
             </div>`;
-        layer.on({
-            click: function (e) {
-                layer.bindPopup(popupContent).openPopup();
-            },
+                layer.on({
+                    click: function(e) {
+                        layer.bindPopup(popupContent).openPopup();
+                    },
+                });
+            }
         });
-    }
-});
 
-// Load GeoJSON dari endpoint
-$.getJSON("{{ route('api.points') }}", function(data) {
-    pointLayer.addData(data);
-    map.addLayer(pointLayer);
-});
+        // Load GeoJSON dari endpoint
+        $.getJSON("{{ route('api.points') }}", function(data) {
+            pointLayer.addData(data);
+            map.addLayer(pointLayer);
+        });
 
         // **GeoJSON untuk Polyline**
         var polylineLayer = L.geoJson(null, {
@@ -253,9 +263,16 @@ $.getJSON("{{ route('api.points') }}", function(data) {
                 <strong>Nama:</strong> ${feature.properties.name} <br>
                 <strong>Deskripsi:</strong> ${feature.properties.description} <br>
                 <strong>Dibuat:</strong> ${feature.properties.created_at} <br>
-                <img src="{{ asset('storage/images') }}/${feature.properties.image}" width="200">;
-            </div>`;
-                layer.bindPopup(popupContent);
+                <img src="{{ asset('storage/images') }}/${feature.properties.image}" width="200"><br>
+                <form method="POST" action="{{ url('polylines') }}/${feature.properties.id}" onsubmit="return confirm('Yakin ingin menghapus titik ini?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-danger">
+                    <i class="fa-solid fa-trash-can"></i> Hapus
+                    </button>
+                </form>
+             </div>`;
+                        layer.bindPopup(popupContent);
 
                 layer.on('mouseover', function(e) {
                     layer.bindTooltip(feature.properties.keterangan, {
@@ -283,12 +300,20 @@ $.getJSON("{{ route('api.points') }}", function(data) {
             },
             onEachFeature: function(feature, layer) {
                 var popupContent = `
-            <div style="color:"#ff1493">
+        <div style="color:#ff1493">
                 <strong>Nama:</strong> ${feature.properties.name} <br>
                 <strong>Deskripsi:</strong> ${feature.properties.description} <br>
                 <strong>Dibuat:</strong> ${feature.properties.created_at} <br>
-                <img src="{{ asset('storage/images') }}/${feature.properties.image}" width="200">;
+                <img src="{{ asset('storage/images') }}/${feature.properties.image}" width="200"><br>
+                 <form method="POST" action="{{ url('polygon') }}/${feature.properties.id}" onsubmit="return confirm('Yakin ingin menghapus titik ini?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-danger">
+                        <i class="fa-solid fa-trash-can"></i> Hapus
+                    </button>
+                </form>
             </div>`;
+
                 layer.bindPopup(popupContent);
 
                 layer.on('mouseover', function(e) {
@@ -299,6 +324,7 @@ $.getJSON("{{ route('api.points') }}", function(data) {
             }
         });
 
+        // Ambil data GeoJSON dari API
         $.getJSON("{{ route('api.polygons') }}", function(data) {
             polygonLayer.addData(data);
             map.addLayer(polygonLayer);
