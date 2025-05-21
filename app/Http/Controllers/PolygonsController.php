@@ -11,6 +11,7 @@ class PolygonsController extends Controller
     {
         $this->polygons = new PolygonsModel();
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -32,33 +33,35 @@ class PolygonsController extends Controller
      */
     public function store(Request $request)
     {
-         // Validation request
-         $request->validate([
-            'name' => 'required|unique:polygons,name',
-            'description' => 'required',
-            'geom_polygon' => 'required',
-            'image' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:100'
-        ],
-        [
-            'name.required' => 'Name is required',
-            'name.unique' => 'Name already exists',
-            'description.required' => 'Description is required',
-            'geom_polygon.required' => 'Geometry polygons is required',
-        ]
+        // Validate request
+        $request->validate(
+            [
+                'name' => 'required|unique:polygons,name',
+                'description' => 'required',
+                'geom_polygon' => 'required',
+                'image' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:2000',
+            ],
+            [
+                'name.required' => 'Name is required',
+                'name.unique' => 'Name already exists',
+                'description.required'=> 'Description is required',
+                'geom_polygon.required' => 'Geometry Polygon is required',
+            ]
         );
 
-        //create images directory if not
+        // Create images directory if not exists
         if (!is_dir('storage/images')) {
             mkdir('./storage/images', 0777);
-         }
-         //Get image file
-         if ($request->hasFile('image')) {
+        }
+
+        // Get image file
+        if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $name_image = time() . "_polygons." . strtolower($image->getClientOriginalExtension());
+            $name_image = time() . "_polygon." . strtolower($image->getClientOriginalExtension());
             $image->move('storage/images', $name_image);
-          } else {
+        } else {
             $name_image = null;
-          }
+        }
 
         $data = [
             'geom' => $request->geom_polygon,
@@ -67,10 +70,9 @@ class PolygonsController extends Controller
             'image' => $name_image,
         ];
 
-
         // Create data
         if (!$this->polygons->create($data)) {
-            return redirect()->route('map')->with('error', 'Polygon failed to added');
+            return redirect()->route('map')->with('error', 'Polygon failed to add');
         }
 
         // Redirect to map
@@ -90,7 +92,12 @@ class PolygonsController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $data = [
+            'title' => 'Edit Polygon',
+            'id' => $id,
+        ];
+
+        return view('edit-polygon', $data);
     }
 
     /**
@@ -98,7 +105,62 @@ class PolygonsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        //dd($id, $request->all());
+
+        // Validation request
+        $request->validate([
+            'name' => 'required|unique:polygons,name,' . $id,
+            'description' => 'required',
+            'geom_polygon' => 'required',
+            'image' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:100',
+        ],
+        [
+            'name.required' => 'Name is required',
+            'name.unique' => 'Name already exists',
+            'description.required' => 'Description is required',
+            'geom_polygon.required' => 'Geometry polygon is required',
+        ]
+        );
+
+        //create images directory if not
+        if (!is_dir('storage/images')) {
+            mkdir('./storage/images', 0777);
+         }
+
+         //Get Old Image File Name
+         $old_image = $this->polygons->find($id)->image;
+
+         //Get image file
+         if ($request ->hasFile('image')) {
+            $image = $request->file('image');
+            $name_image = time() . "_polygon." . strtolower($image->getClientOriginalExtension());
+            $image->move('storage/images', $name_image);
+
+            //Delete olde omage file
+            if ($old_image != null) {
+                if (file_exists('./storage/images/' . $old_image)) {
+            unlink('./storage/images/' . $old_image);
+            }
+        }
+         } else {
+            $name_image = $old_image;
+          }
+
+        $data = [
+            'geom' => $request->geom_polygon,
+            'name' => $request->name,
+            'description' => $request->description,
+            'image' => $name_image,
+        ];
+
+
+        // Create data
+        if (!$this->polygons->find($id)->update($data)) {
+            return redirect()->route('map')->with('error', 'Polygon failed to Update');
+        }
+
+        // Redirect to map
+        return redirect()->route('map')->with('success', 'Polygon has been Updated');
     }
 
     /**
@@ -106,19 +168,19 @@ class PolygonsController extends Controller
      */
     public function destroy(string $id)
     {
-        $imagefile = $this->polygons->find($id)->image;
+        $imagefile  = $this->polygons->find($id)->image;
 
         if (!$this->polygons->destroy($id)) {
-            return redirect()->route('map')->with('eror', 'Polygons failed to delete');
+            return redirect()->route('map')->with('error', 'Polygon failed to delete');
         }
 
-        //Delete image file
-        if ($imagefile !=null) {
-            if (file_exists('./storage/images/' .$imagefile)) {
-                unlink('./public/storage' .$imagefile);
+        // Delete image file
+        if ($imagefile != null) {
+            if (file_exists('./storage/images/' . $imagefile)) {
+                unlink('./storage/images/' . $imagefile);
             }
         }
 
-        return redirect()->route('map')->with('sucess', 'Polygons has been delated');
+        return redirect()->route('map')->with('success', 'Polygon has been deleted');
     }
 }

@@ -120,7 +120,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form method="POST" action="{{ route('polygon.store') }}"enctype="multipart/form-data">
+                <form method="POST" action="{{ route('polygons.store') }}"enctype="multipart/form-data">
                     <div class="modal-body">
                         @csrf
 
@@ -143,7 +143,7 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Photo</label>
                             <input type="file" class="form-control" id="image_polygons" name="image"
-                                onchange="document.getElementById('preview-image-polylgons').src = window.URL.createObjectURL(this.files[0])">
+                                onchange="document.getElementById('preview-image-polygons').src = window.URL.createObjectURL(this.files[0])">
                             <img src="" alt="" id="preview-image-polygons" class="img-thumbnail"
                                 width="300">
                         </div>
@@ -222,18 +222,27 @@
             },
             onEachFeature: function(feature, layer) {
                 var popupContent = `
-            <div style="color:#ff1493">
-                <strong>Nama:</strong> ${feature.properties.name} <br>
-                <strong>Deskripsi:</strong> ${feature.properties.description} <br>
-                <strong>Dibuat:</strong> ${feature.properties.created_at} <br>
-                <img src="{{ asset('storage/images') }}/${feature.properties.image}" width="200"> <br>
-                <form method="POST" action="{{ url('points') }}/${feature.properties.id}" onsubmit="return confirm('Yakin ingin menghapus titik ini?')">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-sm btn-danger">
-                    <i class="fa-solid fa-trash-can"></i></button>
+        <div style="color:#ff1493">
+            <strong>Nama:</strong> ${feature.properties.name} <br>
+            <strong>Deskripsi:</strong> ${feature.properties.description} <br>
+            <strong>Dibuat:</strong> ${feature.properties.created_at} <br>
+            <img src="{{ asset('storage/images') }}/${feature.properties.image}" width="200"> <br>
+            <div class = "row mt-4">
+                <div class="col-12 d-flex justify-content-center gap-2">
+                <a href="{{ url('points/${feature.properties.id}/edit') }}"
+                class="btn btn-sm btn-warning">
+                    <i class="fa-solid fa-pencil-alt"></i> Edit
+                </a>
+                <form method="POST" action="{{ url('points') }}/${feature.properties.id}" onsubmit="return confirm('Yakin ingin menghapus titik ini?')" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-danger">
+                        <i class="fa-solid fa-trash-can"></i> Hapus
+                    </button>
                 </form>
-            </div>`;
+                </div>
+            </div>
+        </div>`;
                 layer.on({
                     click: function(e) {
                         layer.bindPopup(popupContent).openPopup();
@@ -241,7 +250,6 @@
                 });
             }
         });
-
         // Load GeoJSON dari endpoint
         $.getJSON("{{ route('api.points') }}", function(data) {
             pointLayer.addData(data);
@@ -260,19 +268,27 @@
             onEachFeature: function(feature, layer) {
                 var popupContent = `
             <div style="color:#ff1493">
-                <strong>Nama:</strong> ${feature.properties.name} <br>
-                <strong>Deskripsi:</strong> ${feature.properties.description} <br>
-                <strong>Dibuat:</strong> ${feature.properties.created_at} <br>
-                <img src="{{ asset('storage/images') }}/${feature.properties.image}" width="200"><br>
+            <strong>Nama:</strong> ${feature.properties.name} <br>
+            <strong>Deskripsi:</strong> ${feature.properties.description} <br>
+            <strong>Dibuat:</strong> ${feature.properties.created_at} <br>
+            <img src="{{ asset('storage/images') }}/${feature.properties.image}" width="200"><br>
+            <div class="row mt-4">
+                <div class="col-12 d-flex justify-content-center gap-2">
+                <a href="{{ url('polylines/${feature.properties.id}/edit') }}"
+                class="btn btn-sm btn-warning">
+                <i class="fa-solid fa-pencil-alt"></i> Edit
+                </a>
                 <form method="POST" action="{{ url('polylines') }}/${feature.properties.id}" onsubmit="return confirm('Yakin ingin menghapus titik ini?')">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger">
                     <i class="fa-solid fa-trash-can"></i> Hapus
-                    </button>
+                </button>
                 </form>
-             </div>`;
-                        layer.bindPopup(popupContent);
+                </div>
+            </div>
+            </div>`;
+                layer.bindPopup(popupContent);
 
                 layer.on('mouseover', function(e) {
                     layer.bindTooltip(feature.properties.keterangan, {
@@ -287,11 +303,11 @@
             map.addLayer(polylineLayer);
         });
 
-        // **GeoJSON untuk Polygon**
+        // GeoJSON untuk Polygons
         var polygonLayer = L.geoJson(null, {
             style: function(feature) {
                 return {
-                    color: "#ff1493", // Pink
+                    color: "#ff1493",
                     fillColor: "#ff1493",
                     weight: 2,
                     opacity: 1,
@@ -301,17 +317,24 @@
             onEachFeature: function(feature, layer) {
                 var popupContent = `
         <div style="color:#ff1493">
-                <strong>Nama:</strong> ${feature.properties.name} <br>
-                <strong>Deskripsi:</strong> ${feature.properties.description} <br>
-                <strong>Dibuat:</strong> ${feature.properties.created_at} <br>
-                <img src="{{ asset('storage/images') }}/${feature.properties.image}" width="200"><br>
-                 <form method="POST" action="{{ url('polygon') }}/${feature.properties.id}" onsubmit="return confirm('Yakin ingin menghapus titik ini?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-danger">
-                        <i class="fa-solid fa-trash-can"></i> Hapus
-                    </button>
+            <strong>Nama:</strong> ${feature.properties.name} <br>
+            <strong>Deskripsi:</strong> ${feature.properties.description} <br>
+            <strong>Dibuat:</strong> ${feature.properties.created_at} <br>
+            <img src="/storage/images/${feature.properties.image}" width="200"><br>
+            <div class="row mt-4">
+                <div class="col-12 d-flex justify-content-center gap-2">
+                    <a href="/polygons/${feature.properties.id}/edit" class="btn btn-sm btn-warning">
+                        <i class="fa-solid fa-pencil-alt"></i> Edit
+                    </a>
+                    <form method="POST" action="{{ url('polygons') }}/${feature.properties.id}" onsubmit="return confirm('Yakin ingin menghapus titik ini?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-danger">
+                    <i class="fa-solid fa-trash-can"></i> Hapus
+                </button>
                 </form>
+                </div>
+            </div>
             </div>`;
 
                 layer.bindPopup(popupContent);
@@ -323,7 +346,6 @@
                 });
             }
         });
-
         // Ambil data GeoJSON dari API
         $.getJSON("{{ route('api.polygons') }}", function(data) {
             polygonLayer.addData(data);
