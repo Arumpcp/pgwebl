@@ -223,9 +223,11 @@
             onEachFeature: function(feature, layer) {
                 var popupContent = `
         <div style="color:#ff1493">
+            <div style="text-align: center;">
             <strong>Nama:</strong> ${feature.properties.name} <br>
             <strong>Deskripsi:</strong> ${feature.properties.description} <br>
             <strong>Dibuat:</strong> ${feature.properties.created_at} <br>
+            <strong> Dibuat:</strong> ${feature.properties.user_created} <br>
             <img src="{{ asset('storage/images') }}/${feature.properties.image}" width="200"> <br>
             <div class = "row mt-4">
                 <div class="col-12 d-flex justify-content-center gap-2">
@@ -233,7 +235,8 @@
                 class="btn btn-sm btn-warning">
                     <i class="fa-solid fa-pencil-alt"></i> Edit
                 </a>
-                <form method="POST" action="{{ url('points') }}/${feature.properties.id}" onsubmit="return confirm('Yakin ingin menghapus titik ini?')" style="display:inline;">
+                <form method="POST" action="{{ url('points') }}/${feature.properties.id}"
+                onsubmit="return confirm('Yakin ingin menghapus point ini?')" style="display:inline;">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-sm btn-danger">
@@ -241,6 +244,7 @@
                     </button>
                 </form>
                 </div>
+            </div>
             </div>
         </div>`;
                 layer.on({
@@ -268,9 +272,11 @@
             onEachFeature: function(feature, layer) {
                 var popupContent = `
             <div style="color:#ff1493">
+                <div style="text-align: center;">
             <strong>Nama:</strong> ${feature.properties.name} <br>
             <strong>Deskripsi:</strong> ${feature.properties.description} <br>
             <strong>Dibuat:</strong> ${feature.properties.created_at} <br>
+            <strong> Dibuat:</strong> ${feature.properties.user_created} <br>
             <img src="{{ asset('storage/images') }}/${feature.properties.image}" width="200"><br>
             <div class="row mt-4">
                 <div class="col-12 d-flex justify-content-center gap-2">
@@ -278,7 +284,8 @@
                 class="btn btn-sm btn-warning">
                 <i class="fa-solid fa-pencil-alt"></i> Edit
                 </a>
-                <form method="POST" action="{{ url('polylines') }}/${feature.properties.id}" onsubmit="return confirm('Yakin ingin menghapus titik ini?')">
+                <form method="POST" action="{{ url('polylines') }}/${feature.properties.id}"
+                onsubmit="return confirm('Yakin ingin menghapus polylines ini?')">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger">
@@ -286,6 +293,7 @@
                 </button>
                 </form>
                 </div>
+            </div>
             </div>
             </div>`;
                 layer.bindPopup(popupContent);
@@ -316,17 +324,20 @@
             },
             onEachFeature: function(feature, layer) {
                 var popupContent = `
-        <div style="color:#ff1493">
+        <div style="color:#ff1493 ">
+            <div style="text-align: center;">
             <strong>Nama:</strong> ${feature.properties.name} <br>
             <strong>Deskripsi:</strong> ${feature.properties.description} <br>
             <strong>Dibuat:</strong> ${feature.properties.created_at} <br>
+            <strong> Dibuat:</strong> ${feature.properties.user_created} <br>
             <img src="/storage/images/${feature.properties.image}" width="200"><br>
             <div class="row mt-4">
                 <div class="col-12 d-flex justify-content-center gap-2">
                     <a href="/polygons/${feature.properties.id}/edit" class="btn btn-sm btn-warning">
                         <i class="fa-solid fa-pencil-alt"></i> Edit
                     </a>
-                    <form method="POST" action="{{ url('polygons') }}/${feature.properties.id}" onsubmit="return confirm('Yakin ingin menghapus titik ini?')">
+                    <form method="POST" action="{{ url('polygons') }}/${feature.properties.id}"
+                    onsubmit="return confirm('Yakin ingin menghapus polygons ini?')">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger">
@@ -335,7 +346,8 @@
                 </form>
                 </div>
             </div>
-            </div>`;
+            </div>
+         </div>`;
 
                 layer.bindPopup(popupContent);
 

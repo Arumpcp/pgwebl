@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use auth;
 use App\Models\PointsModel;
 use Illuminate\Http\Request;
 
@@ -71,6 +72,7 @@ class PointsController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'image' => $name_image,
+            'user_id' => auth()->user()->id,
         ];
 
 

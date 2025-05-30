@@ -15,8 +15,9 @@ class PolygonsModel extends Model
     public function gejson_polygons()
     {
         $polygons = $this
-        ->select(DB::raw('id, ST_AsGeoJSON(geom) as geom, name, description, image,
-        created_at, updated_at'))
+        ->select(DB::raw('polygons.id, ST_AsGeoJSON(polygons.geom) as geom, polygons.name, polygons.description, polygons.image,
+        polygons.created_at, polygons.updated_at, polygons.user_id, users.name as user_created'))
+        ->leftJoin('users', 'polygons.user_id', '=', 'users.id')
         ->get(); // Ambil semua data polygon
 
         $geojson = [
@@ -35,6 +36,8 @@ class PolygonsModel extends Model
                     'created_at' => $p->created_at, // Waktu pembuatan
                     'updated_at' => $p->updated_at, // Waktu update terakhir
                     'image' => $p->image, // Foto terkait polygon
+                    'user_created' => $p->user_created,
+                    'user_id' => $p->user_id,
                 ],
             ];
 
@@ -49,8 +52,9 @@ class PolygonsModel extends Model
     public function gejson_polygon($id)
     {
         $polygon = $this
-        ->select(DB::raw('id, ST_AsGeoJSON(geom) as geom, name, description, image, created_at, updated_at'))
-        ->where('id', $id) // Cari polygon berdasarkan ID
+        ->select(DB::raw('id, ST_AsGeoJSON(geom) as geom, name, description, image,
+        created_at,updated_at, name as user_created'))
+        ->where('id', $id)
         ->get();
 
         $geojson = [
