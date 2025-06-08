@@ -9,8 +9,8 @@
   <div class="card-body">
     <ul>
         <li>Nama: Arum Pradana</li>
-        <li>Nim: </li>
-        <li>Kelas: </li>
+        <li>Nim: 23/514595/SV/22387 </li>
+        <li>Kelas: PGWEBL B </li>
     </ul>
     </ul>
 
