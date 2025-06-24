@@ -1,21 +1,21 @@
 @extends('layout.template')
 
 @section('content')
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-header">
-                <h4>POINTS DATA</h4>
+    <div class="container pt-5 mt-5" style="padding-top: 100px;">
+        {{-- Daftar Titik --}}
+        <div class="card mb-4">
+            <div class="card-header text-white bg-primary">
+                <h4 class="mb-0">Daftar Titik</h4>
             </div>
-            <div class="card-body">
-                <table class="table table-striped" id="pointstable">
-                    <thead>
+            <div class="card-body bg-light">
+                <table class="table table-striped table-bordered" id="points-table">
+                    <thead class="table-primary">
                         <tr>
                             <th>No</th>
                             <th>Nama</th>
                             <th>Description</th>
-                            <th>Image</th>
-                            <th>Created AT</th>
-                            <th>Update At</th>
+                            <th>Created At</th>
+                            <th>Updated At</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -24,13 +24,8 @@
                                 <td>{{ $p->id }}</td>
                                 <td>{{ $p->name }}</td>
                                 <td>{{ $p->description }}</td>
-                                <td>
-                                    <img src="{{ asset('storage/images/' . $p->image) }}" alt="" width="200"
-                                        title="{{ $p->image }}">
-                                </td>
                                 <td>{{ $p->created_at }}</td>
                                 <td>{{ $p->updated_at }}</td>
-
                             </tr>
                         @endforeach
                     </tbody>
@@ -38,20 +33,20 @@
             </div>
         </div>
 
-        <div class="card mt-4">
-            <div class="card-header">
-                <h4>POLYLINES DATA</h4>
+        {{-- Daftar Garis --}}
+        <div class="card mb-4">
+            <div class="card-header text-white bg-primary">
+                <h4 class="mb-0">Daftar Garis</h4>
             </div>
-            <div class="card-body">
-                <table class="table table-striped" id="polylinestable">
-                    <thead>
+            <div class="card-body bg-light">
+                <table class="table table-striped table-bordered" id="polylines-table">
+                    <thead class="table-primary">
                         <tr>
                             <th>No</th>
                             <th>Nama</th>
                             <th>Description</th>
-                            <th>Image</th>
-                            <th>Created AT</th>
-                            <th>Update At</th>
+                            <th>Created At</th>
+                            <th>Updated At</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,13 +55,8 @@
                                 <td>{{ $p->id }}</td>
                                 <td>{{ $p->name }}</td>
                                 <td>{{ $p->description }}</td>
-                                <td>
-                                    <img src="{{ asset('storage/images/' . $p->image) }}" alt="" width="200"
-                                        title="{{ $p->image }}">
-                                </td>
                                 <td>{{ $p->created_at }}</td>
                                 <td>{{ $p->updated_at }}</td>
-
                             </tr>
                         @endforeach
                     </tbody>
@@ -74,20 +64,21 @@
             </div>
         </div>
 
-        <div class="card mt-4">
-            <div class="card-header">
-                <h4>POLYGONS DATA</h4>
+        {{-- Daftar Poligon --}}
+        <div class="card mb-5">
+            <div class="card-header text-white bg-primary">
+                <h4 class="mb-0">Daftar Poligon</h4>
             </div>
-            <div class="card-body">
-                <table class="table table-striped" id="polylgonsstable">
-                    <thead>
+            <div class="card-body bg-light">
+                <table class="table table-striped table-bordered" id="polygons-table">
+                    <thead class="table-primary">
                         <tr>
                             <th>No</th>
                             <th>Nama</th>
                             <th>Description</th>
                             <th>Image</th>
-                            <th>Created AT</th>
-                            <th>Update At</th>
+                            <th>Created At</th>
+                            <th>Updated At</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -97,12 +88,14 @@
                                 <td>{{ $p->name }}</td>
                                 <td>{{ $p->description }}</td>
                                 <td>
-                                    <img src="{{ asset('storage/images/' . $p->image) }}" alt="" width="200"
-                                        title="{{ $p->image }}">
+                                    @if ($p->image)
+                                        <img src="{{ asset('storage/images/' . $p->image) }}" alt="Image" width="200" class="img-fluid rounded" title="{{ $p->image }}">
+                                    @else
+                                        <span class="text-muted">No image</span>
+                                    @endif
                                 </td>
                                 <td>{{ $p->created_at }}</td>
                                 <td>{{ $p->updated_at }}</td>
-
                             </tr>
                         @endforeach
                     </tbody>
@@ -114,14 +107,32 @@
 
 @section('styles')
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.min.css">
+    <style>
+        body {
+            background-color: #2a488e;
+        }
+
+        .card {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        table img {
+            border-radius: 6px;
+        }
+
+        th, td {
+            vertical-align: middle;
+        }
+    </style>
 @endsection
 
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.3.1/js/dataTables.min.js"></script>
     <script>
-        let tablepoints = new DataTable('#pointsstable');
-        let tablepolylines = new DataTable('#polylinestable');
-        let tablepolygons = new DataTable('#polygonstable');
+        new DataTable('#points-table');
+        new DataTable('#polylines-table');
+        new DataTable('#polygons-table');
     </script>
 @endsection

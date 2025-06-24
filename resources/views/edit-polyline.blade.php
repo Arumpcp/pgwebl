@@ -8,6 +8,16 @@
             width: 100%;
             height: calc(100vh - 56px);
         }
+
+        /* Geser tombol Leaflet Draw agar tidak ketutup navbar */
+        .leaflet-top.leaflet-left {
+            margin-top: 130px;
+            /* sesuaikan tinggi navbar kamu, contoh: 100px */
+        }
+
+        body {
+            background-color: #2a488e;
+        }
     </style>
 @endsection
 
@@ -70,7 +80,7 @@
     <script src="https://unpkg.com/@terraformer/wkt"></script>
 
     <script>
-        var map = L.map('map').setView([-8.725550870233365, 115.19240080909411], 13);
+        var map = L.map('map').setView([-7.789693169370688, 110.3692962319942], 13, 5);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
@@ -118,7 +128,8 @@
                 $('#polyline_name').val(properties.name);
                 $('#polyline_description').val(properties.description);
                 $('#geom_polyline').val(objectGeometry);
-                $('#preview-image-polyline').attr('src', "{{ asset('storage/images') }}/" + properties.image);
+                $('#preview-image-polyline').attr('src', "{{ asset('storage/images') }}/" + properties
+                    .image);
 
                 // Menampilkan modal edit
                 $('#EditPolylineModal').modal('show');
@@ -129,8 +140,9 @@
         var polylineLayer = L.geoJson(null, {
             style: function(feature) {
                 return {
-                    color: "#ff1493", // Pink
-                    weight: 3,
+                    radius: 6,
+                    color: "#093FB4",
+                    weight: 5,
                     opacity: 1
                 };
             },

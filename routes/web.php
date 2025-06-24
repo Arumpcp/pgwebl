@@ -30,4 +30,8 @@ Route::get('/map', [PointsController::class, 'index'])
 
 Route::get('/table', [TableController::class, 'index'])->name('table');
 
+Route::get('/wms-transjogja', function () {
+    return view('wms-transjogja', ['title' => 'WMS Rute Trans Jogja']);
+});
+
 require __DIR__.'/auth.php';

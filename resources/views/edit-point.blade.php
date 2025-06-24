@@ -10,6 +10,16 @@
             width: 100%;
             height: calc(100vh - 56px);
         }
+
+        /* Geser tombol Leaflet Draw agar tidak ketutup navbar */
+        .leaflet-top.leaflet-left {
+            margin-top: 130px;
+            /* sesuaikan tinggi navbar kamu, contoh: 100px */
+        }
+
+        body {
+            background-color: #2a488e;
+        }
     </style>
 @endsection
 
@@ -25,8 +35,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form method="POST" action="{{ route('points.update', $id) }}"
-                enctype="multipart/form-data">
+                <form method="POST" action="{{ route('points.update', $id) }}" enctype="multipart/form-data">
                     <div class="modal-body">
                         @csrf
                         @method('PATCH')
@@ -47,8 +56,8 @@
                         </div>
 
                         <div class="mb-3">
-                        <label for="image_point" class="form-label">Photo</label>
-                        <input type="file" class="form-control" id="image_point" name="image"
+                            <label for="image_point" class="form-label">Photo</label>
+                            <input type="file" class="form-control" id="image_point" name="image"
                                 onchange="document.getElementById('preview-image-point').src = window.URL.createObjectURL(this.files[0])">
                             <img src="" alt="" id="preview-image-point" class="img-thumbnail"
                                 width="300">
@@ -72,7 +81,7 @@
     <script src="https://unpkg.com/@terraformer/wkt"></script>
 
     <script>
-        var map = L.map('map').setView([-8.725550870233365, 115.19240080909411], 13);
+        var map = L.map('map').setView([-7.789693169370688, 110.3692962319942], 13, 5);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -132,8 +141,8 @@
             pointToLayer: function(feature, latlng) {
                 return L.circleMarker(latlng, {
                     radius: 6,
-                    color: "#ff1493", // Pink
-                    weight: 5,
+                    color: "#093FB4",
+                    weight: 8,
                     opacity: 1,
                 });
             },
@@ -151,7 +160,8 @@
                         $('#name').val(properties.name);
                         $('#description').val(properties.description);
                         $('#geom_point').val(objectGeometry);
-                        $('#preview-image-point').attr('src', "{{ asset('storage/images') }}/" + properties.image);
+                        $('#preview-image-point').attr('src', "{{ asset('storage/images') }}/" +
+                            properties.image);
 
                         // Menampilkan modal edit
                         $('#EditPointModal').modal('show');

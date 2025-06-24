@@ -8,6 +8,16 @@
             width: 100%;
             height: calc(100vh - 56px);
         }
+
+        /* Geser tombol Leaflet Draw agar tidak ketutup navbar */
+        .leaflet-top.leaflet-left {
+            margin-top: 130px;
+            /* sesuaikan tinggi navbar kamu, contoh: 100px */
+        }
+
+        body {
+            background-color: #2a488e;
+        }
     </style>
 @endsection
 
@@ -47,7 +57,8 @@
                             <label for="image" class="form-label">Photo</label>
                             <input type="file" class="form-control" id="image_polygon" name="image"
                                 onchange="document.getElementById('preview-image-polygon').src = window.URL.createObjectURL(this.files[0])">
-                            <img src="" alt="" id="preview-image-polygon" class="img-thumbnail mt-2" width="300">
+                            <img src="" alt="" id="preview-image-polygon" class="img-thumbnail mt-2"
+                                width="300">
                         </div>
                     </div>
 
@@ -69,7 +80,7 @@
     <script src="https://unpkg.com/@terraformer/wkt"></script>
 
     <script>
-        var map = L.map('map').setView([-8.725550870233365, 115.19240080909411], 13);
+        var map = L.map('map').setView([-7.789693169370688, 110.3692962319942], 13, 5);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
@@ -82,7 +93,7 @@
         var drawControl = new L.Control.Draw({
             draw: {
                 polyline: false,
-                polygon: true,  // Enable polygon drawing
+                polygon: true, // Enable polygon drawing
                 rectangle: false,
                 circle: false,
                 marker: false,
@@ -117,7 +128,8 @@
                 $('#polygon_name').val(properties.name);
                 $('#polygon_description').val(properties.description);
                 $('#geom_polygon').val(objectGeometry);
-                $('#preview-image-polygon').attr('src', "{{ asset('storage/images') }}/" + properties.image);
+                $('#preview-image-polygon').attr('src', "{{ asset('storage/images') }}/" + properties
+                .image);
 
                 // Menampilkan modal edit
                 $('#EditPolygonModal').modal('show');
@@ -128,8 +140,9 @@
         var polygonLayer = L.geoJson(null, {
             style: function(feature) {
                 return {
-                    color: "#ff1493", // pink
-                    weight: 3,
+                    radius: 6,
+                    color: "#093FB4",
+                    weight: 5,
                     opacity: 1
                 };
             },
